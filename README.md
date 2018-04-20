@@ -1,0 +1,2 @@
+# DataManagers
+Fake news detection
