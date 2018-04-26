@@ -5,6 +5,7 @@ import json
 import twitter
 from watson_developer_cloud import PersonalityInsightsV2 as PersonalityInsights
 
+# copied from codecademy
 
 def analyze(handle):
     twitter_consumer_key = '52uvSUMNZaUayWR43pzAwFcMy'
@@ -23,8 +24,8 @@ def analyze(handle):
         if s.lang == 'en':
             text += str(s.text.encode('utf-8'))
 
-    pi_username = 'cc57c43e-b896-4647-a4b0-bf61b5d95373'
-    pi_password = 'FgyEZ5POoIbW'
+    pi_username = 'cc57c43e-b896-4647-a4b0-bf61b5d95373'    # Personality insight credentials
+    pi_password = 'FgyEZ5POoIbW'                            # Personality insight credentials
     personality_insights = PersonalityInsights(username=pi_username, password=pi_password)
     pi_result = personality_insights.profile(text)
 
