@@ -2,6 +2,7 @@
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 
+###beforeitnews.com
 
 req = Request('http://beforeitsnews.com/opinion-conservative/2018/05/kim-jong-un-is-another-hitler-do-not-be-deceived-video-3377422.html')
 page = urlopen(req).read()
