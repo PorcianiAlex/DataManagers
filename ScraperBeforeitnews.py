@@ -2,25 +2,36 @@
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 
-###beforeitnews.com
+#scraper html for --- beforeitnews.com --- by Alex
 
-req = Request('http://beforeitsnews.com/opinion-conservative/2018/05/kim-jong-un-is-another-hitler-do-not-be-deceived-video-3377422.html')
-page = urlopen(req).read()
+def scrape(url, website):
 
-# parse the html using beautiful soup and store in variable `soup`
-soup = BeautifulSoup(page, "html.parser")
+    req = Request(url)
+    page = urlopen(req).read()
 
-body = soup.find(attrs={"id": "body"})
+    # parse the html using beautiful soup and store in variable `soup`
+    soup = BeautifulSoup(page, "html.parser")
 
-b = body.find_all("p")
+    if website=="beforeitnews.com":
+        body = soup.find(attrs={"id": "body"})
+    elif website=="xxx":
+        body= soup.find(attrs={"id": "body"})
+    else:
+        return "website not supported"
 
-entries = []
-for p in b:
-    a = p.find_all("a")
+    b = body.find_all("p")
 
-    if not p.style and p.text.strip() and len(a)==0: #scarto il paragrafo se c'è un link con len(a)==0
-        entries.append(p.text)
+    entries = []
+    for p in b:
+        a = p.find_all("a")
 
-text = " ".join(entries) #salvare text
+        if not p.style and p.text.strip() and len(a)==0: #scarto il paragrafo se c'è un link con len(a)==0
+            entries.append(p.text)
 
-print(text)
+    text = " ".join(entries) #salvare text
+
+    return (text)
+
+
+result = scrape('http://beforeitsnews.com/opinion-conservative/2018/05/kim-jong-un-is-another-hitler-do-not-be-deceived-video-3377422.html', "beforeitnews.com")
+print(result)
