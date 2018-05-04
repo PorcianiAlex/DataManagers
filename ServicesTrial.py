@@ -6,6 +6,7 @@ import twitter
 from watson_developer_cloud import PersonalityInsightsV2 as PersonalityInsights
 
 # copied from codecademy
+# vava is here
 
 def analyze(handle):
     twitter_consumer_key = '52uvSUMNZaUayWR43pzAwFcMy'
