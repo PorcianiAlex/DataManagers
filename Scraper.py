@@ -2,7 +2,7 @@
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 
-#scraper html for --- beforeitnews.com --- by Alex
+#scraper html for --- beforeitnews | dcclothesline |breitbart --- by Alex
 
 def scrape(url):
 
@@ -24,7 +24,7 @@ def scrape(url):
 
     if website=="http://www.beforeitsnews":
         body = soup.find(attrs={"id": "body"})
-    elif website=="http://www.dcclothesline":
+    elif website=="http://www.dcclothesline" or website== "http://www.breitbart":
         body= soup.find(attrs={"class": "entry-content"})
     else:
         return "website not supported"
@@ -43,5 +43,5 @@ def scrape(url):
     return (text)
 
 
-result = scrape('http://www.beforeitsnews.com/alternative/2018/05/gun-owner-will-give-birth-in-prison-after-trying-to-protect-daughter-from-assailant-3612886.html')
+result = scrape('http://www.breitbart.com/news/record-exports-cut-us-trade-deficit-to-49-billion/')
 print(result)
