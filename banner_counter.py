@@ -3,7 +3,6 @@ import requests
 import os
 import time
 import lxml.html
-from selenium import webdriver
 
 class AdCounter(object):
     """
