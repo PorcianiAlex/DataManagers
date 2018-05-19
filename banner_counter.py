@@ -3,6 +3,8 @@ import requests
 import os
 import time
 import lxml.html
+import multiprocessing as mp
+import concurrent.futures as cf
 
 
 class AdCounter(object):
@@ -10,11 +12,10 @@ class AdCounter(object):
     This class applies elemhide rules from AdBlock Plus to an lxml document or element object.
     One or more AdBlock Plus filter subscription files must be provided.
 
-    Example usage:
-
-#    >>> remover = AdCounter('adList/easylist.txt')
-#    >>> doc = lxml.html.document_fromstring("<html>...</html>")
-#    >>> remover.count_ads(doc)
+    Matcher and matcher2 are utility functions used for parallelism.
+    The three functions count_ads do the same thing, but the sequential one doubles the exec time.
+    There is no sensible difference between multithreading and multiprocessing (~1% time gain with multithreading
+    using 10*n_cpu threads vs multiprocessing using 2*n_cpu processes)
     """
 
     def __init__(self, *rules_files):
@@ -51,8 +52,18 @@ class AdCounter(object):
                             # just skip bad selectors
                             pass
 
+        n_thread = mp.cpu_count()
+        l_query = len(self.rules)
         # create one large query by joining them the xpath | (or) operator
-        self.xpath_query = '|'.join(self.rules)
+        self.xpath_query_list = []
+        for _ in range(n_thread):
+            start = int(_*l_query/n_thread)
+            stop = int((_+1)*l_query/n_thread)
+            self.xpath_query_list.append('|'.join(self.rules[start:stop]))
+
+    def matcher(self, doc, query_position):
+        tree = lxml.html.document_fromstring(doc)
+        return len(tree.xpath(self.xpath_query_list[query_position]))
 
     def count_ads(self, url):
         """
@@ -61,21 +72,39 @@ class AdCounter(object):
         """
 
         html = requests.get(url).text
+        args = [(html, i) for i in range(mp.cpu_count()*2)]
+        with mp.Pool(processes=mp.cpu_count()) as pool:
+            return sum(pool.starmap(self.matcher, args))
+
+    def count_ads_loop(self, url):
+        html = requests.get(url).text
         doc = lxml.html.document_fromstring(html)
-        print(len(self.rules))
-        start = gstart = time.time()
         counter = 0
         for _, rule in enumerate(self.rules):
             if doc.xpath(rule):
                 counter += 1
-            if _ % 1000 == 0:
-                print("iteration: {} out of {}".format(_, len(self.rules)))
-                print("time over 1000: {}".format(time.time() - start))
-                print("time: {}".format(time.time() - gstart))
-                start = time.time()
-        print(counter)
         return counter
 
+    def matcher2(self, doc, query_position):
+        return len(doc.xpath(self.xpath_query_list[query_position]))
 
-remover = AdCounter("adList/easylist.txt")
-remover.count_ads("http://www.nyt.com")
+    def count_ads_th(self, url):
+        html = requests.get(url).text
+        doc = lxml.html.document_fromstring(html)
+        data = 0
+        with cf.ThreadPoolExecutor(max_workers=5*mp.cpu_count()) as executor:
+            future_pool = {executor.submit(self.matcher2, doc, i): i for i in range(mp.cpu_count())}
+            for future in cf.as_completed(future_pool):
+                data += future.result()
+        return data
+
+
+"""-------------------Testing frame-------------------"""
+if __name__ == '__main__':
+    remover = AdCounter("adList/easylist.txt")
+    start = time.time()
+    print(remover.count_ads_th("http://www.nyt.com"))
+    print("th time: {}".format(time.time() - start))
+#    start = time.time()
+#    print(remover.count_ads_loop("http://www.nyt.com"))
+#    print("loop time: {}".format(time.time() - start))
