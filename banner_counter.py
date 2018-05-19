@@ -4,6 +4,7 @@ import os
 import time
 import lxml.html
 
+
 class AdCounter(object):
     """
     This class applies elemhide rules from AdBlock Plus to an lxml document or element object.
@@ -11,7 +12,6 @@ class AdCounter(object):
 
     Example usage:
 
-#    >>> import lxml.html
 #    >>> remover = AdCounter('adList/easylist.txt')
 #    >>> doc = lxml.html.document_fromstring("<html>...</html>")
 #    >>> remover.count_ads(doc)
