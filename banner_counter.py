@@ -5,6 +5,7 @@ import time
 import lxml.html
 import multiprocessing as mp
 import concurrent.futures as cf
+from selenium import webdriver
 
 
 class AdCounter(object):
@@ -45,7 +46,7 @@ class AdCounter(object):
             with open(rules_file, 'r', encoding="utf-8") as f:
                 for line in f:
                     # elemhide rules are prefixed by ## in the adblock filter syntax
-                    if line[:2] == '##':
+                    if line[:2] != '@@':
                         try:
                             self.rules.append(translator.css_to_xpath(line[2:]))
                         except cssselect.SelectorError:
@@ -98,12 +99,21 @@ class AdCounter(object):
                 data += future.result()
         return data
 
+    def iframe_detector(self, url):
+        options = webdriver.ChromeOptions()
+        options.add_argument('headless')
+        driver = webdriver.Chrome(chrome_options=options)
+        driver.get(url)
+        html_source = driver.page_source
+        print(len(driver.find_elements_by_xpath("//iframe")))
+        return html_source.count("<iframe")
+       # return len(driver.find_elements_by_xpath("//iframe"))
 
 """-------------------Testing frame-------------------"""
 if __name__ == '__main__':
     remover = AdCounter("adList/easylist.txt")
     start = time.time()
-    print(remover.count_ads_th("http://www.nyt.com"))
+    print(remover.iframe_detector("http://www.nyt.com"))
     print("th time: {}".format(time.time() - start))
 #    start = time.time()
 #    print(remover.count_ads_loop("http://www.nyt.com"))
