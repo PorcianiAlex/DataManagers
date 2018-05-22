@@ -15,8 +15,10 @@ class AdCounter(object):
 
     Matcher and matcher2 are utility functions used for parallelism.
     The three functions count_ads do the same thing, but the sequential one doubles the exec time.
-    There is no sensible difference between multithreading and multiprocessing (~1% time gain with multithreading
-    using 10*n_cpu threads vs multiprocessing using 2*n_cpu processes)
+    There is no sensible difference between multithreading and multiprocessing: (~1% time gain with multithreading
+    using 10*n_cpu threads vs multiprocessing using 2*n_cpu processes).
+
+    The Chrome webdriver must be present in PATH in order to use the iframe_detector function.
     """
 
     def __init__(self, *rules_files):
@@ -99,15 +101,16 @@ class AdCounter(object):
                 data += future.result()
         return data
 
-    def iframe_detector(self, url):
+    @staticmethod
+    def iframe_detector(url):
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
         driver = webdriver.Chrome(chrome_options=options)
         driver.get(url)
         html_source = driver.page_source
-        print(len(driver.find_elements_by_xpath("//iframe")))
+       # print(len(driver.find_elements_by_xpath("//iframe")))
         return html_source.count("<iframe")
-       # return len(driver.find_elements_by_xpath("//iframe"))
+
 
 """-------------------Testing frame-------------------"""
 if __name__ == '__main__':
