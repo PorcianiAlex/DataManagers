@@ -6,7 +6,7 @@ def get_fake_site_info(url):
     """
     :param url: string
     :return: dict with keys: 'type', '2nd type', '3rd type', 'Source Notes (things to know?)'.
-             The first key is always present, the others only in rare cases
+             The latter keys don't have a value in most cases
     """
     ext = tld.extract(url)
     clean_url = '.'.join(ext[1:])
@@ -15,4 +15,8 @@ def get_fake_site_info(url):
         try:
             return fake_news_urls[clean_url]
         except:
-            return {'type': 'this site is not known for spreading fake news.'}
+            return {'type': 'this site is not known for spreading fake news.',
+                    '2nd type': '',
+                    '3rd type': '',
+                    'Source Notes (things to know?)': ''
+                    }
