@@ -26,7 +26,7 @@ class AdCounter(object):
         :param rules_files: path to rules files
         """
         if not rules_files:
-            rule_urls = [#'https://filters.adtidy.org/extension/chromium/filters/2.txt',
+            rule_urls = ['https://filters.adtidy.org/extension/chromium/filters/2.txt',
                          'https://easylist.to/easylist/easylist.txt'
                          ]
 
@@ -45,7 +45,7 @@ class AdCounter(object):
         self.rules = []
 
         for rules_file in rules_files:
-            with open(rules_file, 'r', encoding="utf-8") as f:
+            with open("adList/" + rules_file, 'r', encoding="utf-8") as f:
                 for line in f:
                     # elemhide rules are prefixed by ## in the adblock filter syntax
                     if line[:2] != '@@':
@@ -55,7 +55,7 @@ class AdCounter(object):
                             # just skip bad selectors
                             pass
 
-        n_thread = mp.cpu_count()
+        n_thread = mp.cpu_count()*2
         l_query = len(self.rules)
         # create one large query by joining them the xpath | (or) operator
         self.xpath_query_list = []
@@ -66,7 +66,12 @@ class AdCounter(object):
 
     def matcher(self, doc, query_position):
         tree = lxml.html.document_fromstring(doc)
-        return len(tree.xpath(self.xpath_query_list[query_position]))
+        n_ads = 0
+        try:
+            n_ads = len(tree.xpath(self.xpath_query_list[query_position]))
+        except:
+            pass
+        return n_ads
 
     def count_ads(self, url):
         """
@@ -84,12 +89,20 @@ class AdCounter(object):
         doc = lxml.html.document_fromstring(html)
         counter = 0
         for _, rule in enumerate(self.rules):
-            if doc.xpath(rule):
-                counter += 1
+            try:
+                if doc.xpath(rule):
+                    counter += 1
+            except:
+                pass
         return counter
 
     def matcher2(self, doc, query_position):
-        return len(doc.xpath(self.xpath_query_list[query_position]))
+        n_ads = 0
+        try:
+            n_ads = len(doc.xpath(self.xpath_query_list[query_position]))
+        except:
+            pass
+        return n_ads
 
     def count_ads_th(self, url):
         html = requests.get(url).text
@@ -113,11 +126,11 @@ class AdCounter(object):
 
 
 """-------------------Testing frame-------------------"""
-if __name__ == '__main__':
-    remover = AdCounter("adList/easylist.txt")
-    start = time.time()
-    print(remover.iframe_detector("http://www.nyt.com"))
-    print("th time: {}".format(time.time() - start))
+#if __name__ == '__main__':
+#    remover = AdCounter("adList/easylist.txt")
+#    start = time.time()
+#    print(remover.iframe_detector("http://www.nyt.com"))
+#    print("th time: {}".format(time.time() - start))
 #    start = time.time()
 #    print(remover.count_ads_loop("http://www.nyt.com"))
 #    print("loop time: {}".format(time.time() - start))
