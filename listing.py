@@ -23,3 +23,23 @@ def get_fake_site_info(url):
                 #    '3rd type': '',
                 #    'Source Notes (things to know?)': ''
                 #    }
+
+
+def add_site_to_list(url, *args):
+    """
+    :param url: url to add
+    :param args: tuple containing 4 strings.
+    :return:
+    """
+    ext = tld.extract(url)
+    clean_url = '.'.join(ext[1:])
+    with open('blacklist.json', 'r+') as jsonfile:
+        fake_news_urls = json.load(jsonfile)
+        fake_news_urls[clean_url] = {'type': args[0],
+                                     '2nd type': args[1],
+                                     '3rd type': args[2],
+                                     'Source Notes (things to know?)': args[3]
+                                     }
+        jsonfile.seek(0)
+        jsonfile.truncate()
+        json.dump(fake_news_urls, jsonfile)
