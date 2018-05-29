@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FakeNewsWatson - The best fake news detection service</title>
+<meta name="description" content="Coming Soon Responsive Template">
+<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+<link href="/static/css/font-awesome.min.css" rel="stylesheet">
+<link href="/static/css/main.css" rel="stylesheet">
+</head>
+<body>
+
+<!--main-->
+<section class="main">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 col-sm-6">
+        <!--logo-->
+        <div class="logo"><img src="\static\images\ibm-watson_logo.png" alt="logo"></div>
+        <!--logo end-->
+      </div>
+      <div class="col-md-6 col-sm-6">
+
+        <!--social-->
+        <div class="social text-center">
+          <ul>
+            <li><a href="https://twitter.com/" target="_blank"><i class="fa fa-twitter"></i></a></li>
+            <li><a href="https://www.facebook.com/" target="_blank"><i class="fa fa-facebook"></i></a></li>
+            <li><a href="https://plus.google.com/" target="_blank"><i class="fa fa-google-plus"></i></a></li>
+          </ul>
+        </div>
+        <!--social end-->
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+
+        <!--welcome-message-->
+        <header class="welcome-message text-center">
+          <h1><span class="rotate">#FAKENEWSWATSON</span></h1>
+        </header>
+        <!--welcome-message end-->
+
+        <!--sub-form-->
+        <div class="sub-form text-center">
+          <div class="row">
+            <div class="col-md-5 center-block col-sm-8 col-xs-11">
+              <form role="form" id="mc-form">
+                <div class="input-group">
+                  <input type="email" class="form-control" placeholder="Paste here the link of the tweet or news" required value="" name="EMAIL">
+                  <span class="input-group-btn">
+                  <button type="submit" class="btn btn-default" id="mc-subscribe" value="Subscribe" name="subscribe">Submit<i class="fa fa-paper-plane"></i></button>
+                  </span> </div>
+              </form>
+              <p id="mc-notification"></p>
+            </div>
+          </div>
+        </div>
+        <!--sub-form end-->
+
+        <!-- Trends-->
+        <ul class="trends text-center">
+          {% for trend in trends%}
+            <li><span class="days">{{trend}}</span></li>
+            <li class="seperator">|</li>
+          {% endfor %}
+        </ul>
+        <!-- Trends end-->
+
+      </div>
+    </div>
+  </div>
+</section>
+<!--main end-->
+
+<!--Features-->
+
+<section class="features section-spacing">
+  <div class="container">
+    <h2 class="text-center">Featured services</h2>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="wow fadeInUp product-features row">
+          <div class="col-md-2 col-sm-2 col-xs-2 text-center"><i class="fa fa-rocket fa-3x"></i></div>
+          <div class="col-md-10 col-sm-10 col-xs-10">
+            <!--features 3-->
+            <h4>UX/UI Design</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, beatae, esse, aspernatur, alias odio numquam incidunt perspiciatis aliquid voluptate sapiente.</p>
+            <!--features 3 end-->
+          </div>
+        </div>
+        <div class="wow fadeInUp product-features row">
+          <div class="col-md-2 col-sm-2 col-xs-2 text-center"><i class="fa fa-bullhorn fa-3x"></i></div>
+          <div class="col-md-10 col-sm-10 col-xs-10">
+            <!--features 4-->
+            <h4>Product Development</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, beatae, esse, aspernatur, alias odio numquam incidunt perspiciatis aliquid voluptate sapiente.</p>
+            <!--features 4 end-->
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="wow fadeInUp product-features row">
+          <div class="col-md-2 col-sm-2 col-xs-2 text-center"><i class="fa fa-bicycle fa-3x"></i></div>
+          <div class="col-md-10 col-sm-10 col-xs-10">
+            <!--features 3-->
+            <h4>Digital Marketing</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, beatae, esse, aspernatur, alias odio numquam incidunt perspiciatis aliquid voluptate sapiente.</p>
+            <!--features 3 end-->
+          </div>
+        </div>
+        <div class="wow fadeInUp product-features row">
+          <div class="col-md-2 col-sm-2 col-xs-2 text-center"><i class="fa fa-paper-plane-o fa-3x"></i></div>
+          <div class="col-md-10 col-sm-10 col-xs-10">
+            <!--features 4-->
+            <h4>Social Advertise</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, beatae, esse, aspernatur, alias odio numquam incidunt perspiciatis aliquid voluptate sapiente.</p>
+            <!--features 4 end-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--Features end-->

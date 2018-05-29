@@ -1,0 +1,14 @@
+.trends-carousel{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.trends-carousel .trend {
+  font-style: italic;
+  font-size: 1em;
+  font-weight: 500;
+  float: left;
+  margin: 1em;
+}

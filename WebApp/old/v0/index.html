@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+      <link href="../static/index.css" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+      <div class="left">
+        <div class="trendstitle">Trends in US</div>
+        <div class="trends">
+          {% for trend in trends %}
+            <p>{{trend}}</p>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="main">
+        <div class="logo">
+          <img src"..\static\FNW-logo.png"/>
+        </div>
+        <div class="searchbox">
+          <input type="text" class="searchTerm" placeholder="Welcome, paste here the link of the tweet or news...">
+          <button type="submit" class="searchButton">
+            <i class="fa fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </body>
+</html>
