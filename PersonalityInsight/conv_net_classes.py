@@ -30,7 +30,7 @@ class HiddenLayer(object):
         self.activation = activation
 
         if W is None:
-            if activation.func_name == "ReLU":
+            if activation.__name__ == "ReLU":
                 W_values = numpy.asarray(0.01 * rng.standard_normal(size=(n_in, n_out)), dtype=theano.config.floatX)
             else:
                 W_values = numpy.asarray(rng.uniform(low=-numpy.sqrt(6. / (n_in + n_out)), high=numpy.sqrt(6. / (n_in + n_out)),
@@ -83,7 +83,7 @@ class MLPDropout(object):
         #rectified_linear_activation = lambda x: T.maximum(0.0, x)
 
         # Set up all the hidden layers
-        self.weight_matrix_sizes = zip(layer_sizes, layer_sizes[1:])
+        self.weight_matrix_sizes = list(zip(layer_sizes, layer_sizes[1:]))
         self.layers = []
         self.dropout_layers = []
         self.activations = activations
@@ -387,7 +387,7 @@ class LeNetConvPoolLayer(object):
             output = pool_2d.max_pool_2d(input=conv_out_tanh, ds=self.poolsize, ignore_border=True)
         elif self.non_linear=="relu":
             conv_out_tanh = ReLU(conv_out + self.b.dimshuffle('x', 0, 'x', 'x'))
-            output = pool_2d.max_pool_2d(input=conv_out_tanh, ds=self.poolsize, ignore_border=True)
+            output = pool_2d(input=conv_out_tanh, ds=self.poolsize, ignore_border=True)
         else:
             pooled_out = pool_2d.max_pool_2d(input=conv_out, ds=self.poolsize, ignore_border=True)
             output = pooled_out + self.b.dimshuffle('x', 0, 'x', 'x')
