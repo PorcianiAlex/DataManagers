@@ -1,6 +1,8 @@
 import banner_counter as bc
 import listing
 import requests
+import json
+import random
 
 
 def unshorten_url(url):
@@ -35,8 +37,16 @@ class Kay(object):
             url = unshorten_url(element)
             count = self.banner_counter.iframe_detector(url) + self.banner_counter.count_ads(url)
             bl_info = listing.get_fake_site_info(url)
-            score.append((element, url, count, bl_info))
+            eval = random.random()
+            user_type = ""
+            #score.append((element, url, count, bl_info))
+            score.append(json.loads({'received_url': element, # string
+                                     'unshortened_url': url, # string
+                                     'blacklist': bl_info, #string
+                                     'evaluation': eval, # float
+                                     'user_evaluation': "" #string
+                                     }))
 
-        return score
+        return json.loads(score)
 
 
