@@ -6,6 +6,8 @@ import theano.tensor as T
 from theano.tensor.signal.pool import pool_2d
 from theano.tensor.nnet import conv
 
+theano.config.floatX = "float32"
+
 def ReLU(x):
     y = T.maximum(0.0, x)
     return(y)

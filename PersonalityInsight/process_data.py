@@ -7,6 +7,7 @@ import pandas as pd
 import csv
 import getpass
 
+theano.config.floatX = "float32"
 
 def build_data_cv(datafile, cv=10, clean_string=True):
     """

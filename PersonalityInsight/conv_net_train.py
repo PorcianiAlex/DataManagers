@@ -14,6 +14,8 @@ import PersonalityInsight
 from PersonalityInsight.conv_net_classes import LeNetConvPoolLayer, MLPDropout
 warnings.filterwarnings("ignore")
 
+theano.config.floatX = "float32"
+
 #different non-linearities
 def ReLU(x):
     y = T.maximum(0.0, x)
