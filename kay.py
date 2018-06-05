@@ -2,7 +2,11 @@ import banner_counter as bc
 import listing
 import requests
 import json
-import random
+from sklearn.externals import joblib
+from sklearn.svm import SVC
+from Scraper import scrape
+import features_extractor as ml
+
 
 
 def unshorten_url(url):
@@ -13,9 +17,10 @@ def unshorten_url(url):
 
 class Kay(object):
 
-    def __init__(self):
+    def __init__(self, name):
         self.banner_counter = bc.AdCounter("easylist.txt")
-        # TODO: initialize ml model
+        self.clf = joblib.load('estimator.pkl')
+        print(name)
 
     def evaluate(self, data_list):
         tweets = []
@@ -37,16 +42,16 @@ class Kay(object):
             url = unshorten_url(element)
             count = self.banner_counter.iframe_detector(url) + self.banner_counter.count_ads(url)
             bl_info = listing.get_fake_site_info(url)
-            eval = random.random()
-            user_type = ""
-            #score.append((element, url, count, bl_info))
-            score.append(json.loads({'received_url': element, # string
-                                     'unshortened_url': url, # string
-                                     'blacklist': bl_info, #string
-                                     'evaluation': eval, # float
-                                     'user_evaluation': "" #string
-                                     }))
+            txt = scrape(url)
+            features = ml.extract_features(txt).reshape(1,-1) # .append(count)
+            eval = self.clf.predict_proba(features) # TODO: scaling first
+            print(eval[0][0])
+            user_type = "stronzo"
+            score.append({"received_url": element, # string
+                          "unshortened_url": url, # string
+                          "blacklist": bl_info, #string
+                          "evaluation": eval[0][0], # float
+                          "user_evaluation": user_type #string
+                          })
 
-        return json.loads(score)
-
-
+        return json.dumps(score)

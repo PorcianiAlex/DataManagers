@@ -3,7 +3,7 @@ from WebApp.twitter_api import get_trends, get_embed_code
 from kay import Kay
 
 app = Flask(__name__)
-evaluator = Kay()
+evaluator = Kay(__name__)
 
 
 @app.route('/')

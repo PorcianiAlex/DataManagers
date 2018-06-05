@@ -21,7 +21,7 @@ class MyStreamListener(tweepy.StreamListener):
         auth = tweepy.OAuthHandler(APP_KEY, APP_SECRET)
         auth.set_access_token(ACC_TOKEN, ACC_TOKEN_SECRET)
         self.api = tweepy.API(auth, wait_on_rate_limit=True)
-        self.evaluator = Kay()
+        self.evaluator = Kay(__name__)
         super().__init__(self.api)
 
     @staticmethod
