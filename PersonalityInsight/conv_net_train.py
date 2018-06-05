@@ -14,6 +14,8 @@ import PersonalityInsight
 from PersonalityInsight.conv_net_classes import LeNetConvPoolLayer, MLPDropout
 warnings.filterwarnings("ignore")
 
+theano.config.floatX = "float32"
+
 #different non-linearities
 def ReLU(x):
     y = T.maximum(0.0, x)
@@ -70,13 +72,13 @@ def train_conv_net(datasets,
     print(parameters)
 
     #define model architecture
-    index = T.lscalar()
+    index = T.iscalar() #changed from lscalar to iscalar
     x = T.tensor3('x')
     y = T.ivector('y')
     mair = T.fmatrix('mair')
     Words = theano.shared(value = U, name = "Words")
-    zero_vec_tensor = T.vector()
-    zero_vec = np.zeros(img_w)
+    zero_vec_tensor = T.vector(dtype=theano.config.floatX) #added dtype
+    zero_vec = np.zeros(img_w, dtype=theano.config.floatX) #added dtype
     set_zero = theano.function([zero_vec_tensor], updates=[(Words, T.set_subtensor(Words[0,:], zero_vec_tensor))], allow_input_downcast=True)
 
     conv_layers = []
@@ -90,6 +92,7 @@ def train_conv_net(datasets,
 
 
     layer0_input = Words[T.cast(x.flatten(),dtype="int32")].reshape((x.shape[0],x.shape[1],x.shape[2],Words.shape[1]))
+    #changed from int32 to int64
 
     def convolve_user_statuses(statuses):
         layer1_inputs = []
@@ -101,7 +104,7 @@ def train_conv_net(datasets,
         status_count,_ = theano.scan(fn = sum_mat, sequences=statuses, outputs_info=T.constant(0,dtype=theano.config.floatX))
 
         # Slice-out dummy (zeroed) sentences
-        relv_input=statuses[:T.cast(status_count[-1],dtype='int32')].dimshuffle(0, 'x', 1, 2)
+        relv_input=statuses[:T.cast(status_count[-1],dtype='int32')].dimshuffle(0, 'x', 1, 2) #changed from int32 to int64
 
         for conv_layer in conv_layers:
             layer1_inputs.append(conv_layer.set_input(input=relv_input).flatten(2))
@@ -158,7 +161,7 @@ def train_conv_net(datasets,
     n_train_batches = int(np.round(n_batches*0.9))
     #divide train set into train/val sets
     test_set_x = datasets[2]
-    test_set_y = np.asarray(datasets[3],"int32")
+    test_set_y = np.asarray(datasets[3], dtype= theano.config.floatX) #changed from int32 to int64
     test_set_m = datasets[5]
     train_set_x, train_set_y, train_set_m = shared_dataset((new_data_x[:n_train_batches*batch_size], new_data_y[:n_train_batches*batch_size], new_data_m[:n_train_batches*batch_size]))
     val_set_x, val_set_y, val_set_m = shared_dataset((new_data_x[n_train_batches*batch_size:], new_data_y[n_train_batches*batch_size:], new_data_m[n_train_batches*batch_size:]))
@@ -168,7 +171,7 @@ def train_conv_net(datasets,
             x: val_set_x[index * batch_size: (index + 1) * batch_size],
              y: val_set_y[index * batch_size: (index + 1) * batch_size],
               mair: val_set_m[index * batch_size: (index + 1) * batch_size]},##mairesse_change
-                                allow_input_downcast = True)
+                                allow_input_downcast = True) #changed from true to false
 
     #compile theano functions to get train/val/test errors
     test_model = theano.function([index], [classifier.errors(y), svm_data],
@@ -187,8 +190,8 @@ def train_conv_net(datasets,
     test_y_pred = classifier.predict(layer1_input)
     test_error = T.sum(T.neq(test_y_pred, y))
     true_p = T.sum(test_y_pred*y)
-    false_p = T.sum(test_y_pred*T.mod(y+T.ones_like(y),T.constant(2,dtype='int32')))
-    false_n = T.sum(y*T.mod(test_y_pred+T.ones_like(y),T.constant(2,dtype='int32')))
+    false_p = T.sum(test_y_pred*T.mod(y+T.ones_like(y),T.constant(2,dtype='int32'))) #changed from int32 to int64
+    false_n = T.sum(y*T.mod(test_y_pred+T.ones_like(y),T.constant(2,dtype='int32'))) #changed from int32 to int64
     test_model_all = theano.function([x, y,
                                         mair##mairesse_change
                                         ]
@@ -234,7 +237,7 @@ def train_conv_net(datasets,
                 test_set_m[test_batches*batch_size:]##mairesse_change
                 ))
             test_loss_list_temp=test_loss_list
-            test_loss_list=np.asarray([t[:-1] for t in test_loss_list])
+            test_loss_list=np.asarray([t[:-1] for t in test_loss_list], dtype= theano.config.floatX)
             test_loss = np.sum(test_loss_list[:, 0])/float(test_set_x.shape[0])
             test_perf = 1- test_loss
             tp = np.sum(test_loss_list[:, 1])
@@ -291,7 +294,7 @@ def shared_dataset(data_xy, borrow=True):
         shared_m = theano.shared(np.asarray(data_m,
                                                dtype=theano.config.floatX),
                                  borrow=borrow)
-        return shared_x, T.cast(shared_y, 'int32'), shared_m
+        return shared_x, T.cast(shared_y, 'int32'), shared_m #changed from int32 to int64
 
 def sgd_updates_adadelta(params,cost,rho=0.95,epsilon=1e-6,norm_lim=9,word_vec_name='Words'):
     """
@@ -394,10 +397,10 @@ def make_idx_data_cv(revs, word_idx_map, mairesse, charged_words, cv, per_attr=0
             trainX.append(sent)
             trainY.append(rev['y'+str(per_attr)])
             mTrain.append(mairesse[rev["user"]])
-    trainX = np.array(trainX,dtype="int32")
-    testX = np.array(testX,dtype="int32")
-    trainY = np.array(trainY,dtype="int32")
-    testY = np.array(testY,dtype="int32")
+    trainX = np.array(trainX,dtype=theano.config.floatX) #changed from int32 to int64
+    testX = np.array(testX,dtype=theano.config.floatX) #changed from int32 to int64
+    trainY = np.array(trainY,dtype=theano.config.floatX) #changed from int32 to int64
+    testY = np.array(testY,dtype=theano.config.floatX) #changed from int32 to int64
     mTrain = np.array(mTrain, dtype=theano.config.floatX)
     mTest = np.array(mTest, dtype=theano.config.floatX)
     return [trainX, trainY, testX, testY, mTrain, mTest]

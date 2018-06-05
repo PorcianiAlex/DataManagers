@@ -60,7 +60,7 @@ def ConvNetTrainMain(mode, wordVec, attr):
 
     charged_words = []
 
-    emof = open("Emotion_Lexicon.csv", "rb")
+    emof = open("PersonalityInsight\Emotion_Lexicon.csv", "r")
     csvf = csv.reader(emof, delimiter=',', quotechar='"')
     first_line = True
 
@@ -110,9 +110,16 @@ def ConvNetTrainMain(mode, wordVec, attr):
     ofile.close()
 
 def Main():
-    wordVector = 'C:\\Users\\gabri\Desktop\\Ingegneria\\Magistrale\\First Year\\Second Semester\\DataManagers\\GoogleNews-vectors-negative300.bin'
-    dataset = 'PersonalityInsight/essays.csv'
-    mairesse = 'PersonalityInsight/mairesse.csv'
-    ProcessDataMain(wordVector, dataset, mairesse)
+    #wordVector = 'C:\\Users\\gabri\Desktop\\Ingegneria\\Magistrale\\First Year\\Second Semester\\DataManagers\\GoogleNews-vectors-negative300.bin'
+    #dataset = 'PersonalityInsight/essays.csv'
+    #mairesse = 'PersonalityInsight/mairesse.csv'
+    #ProcessDataMain(wordVector, dataset, mairesse)
+
+    wordVector = "-word2vec"
+    mode = "-nonstatic"
+    attr = 2
+    attr = np.int32(attr)
+    ConvNetTrainMain(mode, wordVector, attr)
+
 
 Main()

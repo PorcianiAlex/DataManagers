@@ -7,6 +7,7 @@ import pandas as pd
 import csv
 import getpass
 
+theano.config.floatX = "float32"
 
 def build_data_cv(datafile, cv=10, clean_string=True):
     """
@@ -95,15 +96,14 @@ def load_bin_vec(fname, vocab):
         binary_len = np.dtype(theano.config.floatX).itemsize * layer1_size
         for line in range(vocab_size):
             word = []
-            while True:
-                ch = f.read(1)
-                if ch == ' ':
-                    word = ''.join(word)
-                    break
-                if ch != '\n':
-                    word.append(ch)
-            if word in vocab:
-               word_vecs[word] = np.fromstring(f.read(binary_len), dtype=theano.config.floatX)
+            ch = f.read(1)
+            if ch == ' ':
+                word = ''.join(word)
+                break
+            if ch != '\n':
+                word.append(ch)
+            if tuple(word) in vocab:
+               word_vecs[tuple(word)] = np.fromstring(f.read(binary_len), dtype=theano.config.floatX)
             else:
                 f.read(binary_len)
     return word_vecs
@@ -149,7 +149,7 @@ def clean_str_sst(string):
 
 def get_mairesse_features(file_name):
     feats={}
-    with open(file_name, "rb") as csvf:
+    with open(file_name, "r") as csvf:
         csvreader=csv.reader(csvf,delimiter=',',quotechar='"')
         for line in csvreader:
             feats[line[0]]=[float(f) for f in line[1:]]
