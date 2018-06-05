@@ -34,4 +34,4 @@ def extract_features(text):
                 emotions['AFRAID'], emotions['AMUSED'], emotions['ANGRY'], emotions['ANNOYED'],
                 emotions['DONT_CARE'], emotions['HAPPY'], emotions['INSPIRED'], emotions['SAD'],
                 ]
-    return np.asarray(features)
+    return features

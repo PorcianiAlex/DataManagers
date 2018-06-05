@@ -40,14 +40,19 @@ class MyStreamListener(tweepy.StreamListener):
             return True
         # if len(response["intents"]) > 0 and response["intents"][0]['intent'] == 'url':
         elif dm['entities']['urls']:
+            self.api.send_direct_message(dm['sender']['id'], text='wait for answer, processing...')
             urls = [dm['entities']['urls'][i]['expanded_url'] for i in range(len(dm['entities']['urls']))]
             # urls = self.findurls(dm['text'])
             # print(len(urls))
             for _, url in enumerate(urls):
                 if "twitter" in url:
                     urls[_] = self.api.get_status(url.split("/")[-1], tweet_mode='extended')
-            score = self.evaluator.evaluate(urls)
-            self.api.send_direct_message(dm['sender']['id'], text=score)
+            score = json.loads(self.evaluator.evaluate(urls))
+            self.api.send_direct_message(dm['sender']['id'], text='The article URL is: {}.\n{}\n'
+                                                                  'The account that shared the enws is: {}.\n'
+                                                                  'The confidence that the news is fake is {}%.'
+                                         .format(score[0]['unshortened_url'], score[0]['blacklist'],
+                                                 score[0]['user_evaluation'], score[0]['evaluation']*100))
         #else:
          #   self.api.send_direct_message(dm['sender']['id'], text=response['output']['text'][0])
         return True
