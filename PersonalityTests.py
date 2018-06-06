@@ -46,7 +46,8 @@ def ConvNetTrainMain(mode, wordVec, attr):
     elif mode == "-static":
         print("model architecture: CNN-static")
         non_static = False
-        PersonalityInsight.conv_net_classes.run  # execfile("conv_net_classes.py")
+        #PersonalityInsight.conv_net_classes.run()
+        exec(open("PersonalityInsight\conv_net_classes.py").read())
     if word_vectors == "-rand":
         print("using: random vectors")
         U = W2
@@ -88,9 +89,9 @@ def ConvNetTrainMain(mode, wordVec, attr):
                                       lr_decay=0.95,
                                       filter_hs=[1, 2, 3],
                                       conv_non_linear="relu",
-                                      hidden_units=[200, 200, 2],
+                                      hidden_units=[20, 20, 2],
                                       shuffle_batch=True,
-                                      n_epochs=50,
+                                      n_epochs=1,
                                       sqr_norm_lim=9,
                                       non_static=non_static,
                                       batch_size=50,
@@ -116,7 +117,7 @@ def Main():
     #ProcessDataMain(wordVector, dataset, mairesse)
 
     wordVector = "-word2vec"
-    mode = "-nonstatic"
+    mode = "-static"
     attr = 2
     attr = np.int32(attr)
     ConvNetTrainMain(mode, wordVector, attr)
