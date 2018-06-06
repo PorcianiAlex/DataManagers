@@ -23,7 +23,7 @@
         <div class="container">
             <div class="navbar-translate">
                 <a class="navbar-brand" href="http://127.0.0.1:5000" rel="tooltip" title="Designed by TheDataManagers." data-placement="bottom">
-                    KAY
+                    <img style="width: 60px" src="../static/index_second/img/now-logo-kay.png" alt="">
                 </a>
                 <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-bar bar1"></span>
@@ -36,24 +36,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="http://127.0.0.1:5000">
                             <p>HOMEPAGE</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" rel="tooltip" title="Follow us on Twitter" data-placement="bottom" href="https://twitter.com/CreativeTim" target="_blank">
-                            <i class="fa fa-twitter"></i>
-                            <p class="d-lg-none d-xl-none">Twitter</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" rel="tooltip" title="Like us on Facebook" data-placement="bottom" href="https://www.facebook.com/CreativeTim" target="_blank">
-                            <i class="fa fa-facebook-square"></i>
-                            <p class="d-lg-none d-xl-none">Facebook</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" rel="tooltip" title="Follow us on Instagram" data-placement="bottom" href="https://www.instagram.com/CreativeTimOfficial" target="_blank">
-                            <i class="fa fa-instagram"></i>
-                            <p class="d-lg-none d-xl-none">Instagram</p>
                         </a>
                     </li>
                 </ul>
@@ -72,28 +54,56 @@
                       {{html|safe}}
                     </div>
                     <div class="col-md-6">
-                      <div class="alert alert-success" role="alert">
-                          <div class="container">
-                              <div class="alert-icon">
-                                  <i class="now-ui-icons ui-2_like"></i>
-                              </div>
-                              <strong>Safe!</strong> You can trust this element.
-                          </div>
+                      <div class="statistics-kay">
+                        <h5>How much Kay thinks it is fake?</h5>
+                        <canvas id="donut-confidence" width="160" height="160" style="position: relative; left: 50%; margin-left:-80px;">
+                          Your browser does not support the HTML5 canvas tag.
+                        </canvas>
                       </div>
-                      <h4>Some insights:</h4>
-                      <div class="progress-container">
-                          <span class="progress-badge">LEVEL OF CONFIDENCE</span>
-                          <div class="progress">
-                              <div class="progress-bar" role="progressbar" aria-valuenow="83" aria-valuemin="0" aria-valuemax="100" style="width: 83%;">
-                                  <span class="progress-value">83%</span>
-                              </div>
-                          </div>
+                    </div>
+                  </div>
+                  <div class="row" style="padding: 15px">
+                    <div class="statistics-kay">
+                      <h5>Which are the metrics Kay takes into account?</h5>
+                      <p>The percentage showed in the upper box is the general confidence resulting from the weighted sum over the following parameters:</p>
+                      <p><b style="color: #0de5a8">&#9679;</b>Safe  &emsp;<b style="color: #f3e97a">&#9679;</b>Suspicious &emsp;<b style="color: #dc3545">&#9679;</b>Warning</p>
+                      <div class="row">
+                        <div class="col-md-3">
+                          <h6>PAGE QUALITY</h6>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="statistics-kay-lightbox {{page_q}}"></div>
+                        </div>
+                        <div class="col-md-6">
+                          <p>Metric based on advertisement density computed through webpage banners counting. </p>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-3">
+                          <h6>SOURCE RELIABILITY</h6>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="statistics-kay-lightbox {{source}}"></div>
+                        </div>
+                        <div class="col-md-6">
+                          <p>Metric based on blacklist comparison and ML techniques for user profile assessment. </p>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-3">
+                          <h6>CONTENT ANALYSIS</h6>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="statistics-kay-lightbox {{text_ev}}"></div>
+                        </div>
+                        <div class="col-md-6">
+                          <p>Metric based on textual analysis that combine ML classification for both syntactic and semantic inspection.</p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
             </div>
-          </div>
 
         <!--  End Modal -->
         <footer class="footer" data-background-color="black">
@@ -149,6 +159,112 @@
             }, 1000);
         }
     }
+</script>
+
+<script>
+$(function(){
+
+    var canvas=document.getElementById("donut-confidence");
+    var ctx=canvas.getContext("2d");
+
+    function hexToRgb(hex) {
+      // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+      var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+      hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+          return r + r + g + g + b + b;
+      });
+
+      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16)
+      } : null;
+    }
+
+    function rgbToHex(r, g, b) {
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
+
+    function drawMultiRadiantCircle(xc, yc, radius, radientColors) {
+        //var partLength = (2 * Math.PI) / (radientColors.length - 1);
+        var start = - 0.5*Math.PI;
+        //var gradient = null;
+        var startColor = null,
+            endColor = null;
+        var confidence = {{confidence}}/100;
+        var stop = - 0.5*Math.PI + 2*Math.PI*confidence - 0.006*Math.PI;
+
+        /*for (var i = 0; i < radientColors.length - 1; i++) {
+            startColor = radientColors[i];
+            endColor = radientColors[(i + 1) % radientColors.length];
+
+            // x start / end of the next arc to draw
+            var xStart = xc + Math.cos(start) * r;
+            var xEnd = xc + Math.cos(start + partLength) * r;
+            // y start / end of the next arc to draw
+            var yStart = yc + Math.sin(start) * r;
+            var yEnd = yc + Math.sin(start + partLength) * r;
+
+            if (2*Math.PI*confidence - 0.5*Math.PI> start) {
+              ctx.imageSmoothingEnabled= true;
+              ctx.beginPath();
+
+              gradient = ctx.createLinearGradient(xStart, yStart, xEnd, yEnd);
+              gradient.addColorStop(0, startColor);
+              gradient.addColorStop(1.0, endColor);
+
+              ctx.strokeStyle = gradient;
+              if (2*Math.PI*confidence - 0.5*Math.PI > start + partLength) {
+                ctx.arc(xc, yc, r, start, start + partLength);
+              } else {
+                ctx.arc(xc, yc, r, start, 2*Math.PI*confidence - 0.5*Math.PI);
+              }
+              ctx.lineWidth = 13;
+              ctx.stroke();
+              ctx.closePath();
+            }
+
+            start += partLength;
+        }*/
+
+
+
+        ctx.imageSmoothingEnabled = true;
+        ctx.beginPath();
+
+        startColor = radientColors[parseInt({{confidence}}/34)]
+        endColor = radientColors[parseInt({{confidence}}/34)+1]
+
+        var r = 0, g = 0, b = 0;
+
+        r = hexToRgb(startColor).r + confidence*hexToRgb(endColor).r;
+        g = hexToRgb(startColor).g + confidence*hexToRgb(endColor).g;
+        b = hexToRgb(startColor).b + confidence*hexToRgb(endColor).b;
+
+
+
+        var gradient = 'rgb(' + parseInt(r) + ',' + parseInt(g) + ',' + parseInt(b) + ')';
+        ctx.strokeStyle = gradient;
+        ctx.arc(xc, yc, radius, start, stop);
+        ctx.lineWidth = 13;
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.textAlign="center";
+        ctx.font="35px Montserrat";
+        ctx.fillText({{confidence}} + "%",80,90);
+    }
+
+    var someColors = [];
+    someColors.push('#0de5a8');
+    someColors.push('#f3e97a');
+    someColors.push('#f96332');
+    someColors.push('#dc3545');
+
+    drawMultiRadiantCircle(80, 80, 70, someColors);
+
+}); // end $(function(){});
 </script>
 
 </html>
