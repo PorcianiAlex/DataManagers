@@ -37,10 +37,10 @@ def train_conv_net(datasets,
                    attr=0,
                    img_w=300,
                    filter_hs=[3,4,5],
-                   hidden_units=[100,2],
+                   hidden_units=[20,2],
                    dropout_rate=[0.5],
                    shuffle_batch=True,
-                   n_epochs=25,
+                   n_epochs=10,
                    batch_size=50,
                    lr_decay = 0.95,
                    conv_non_linear="relu",
@@ -157,7 +157,7 @@ def train_conv_net(datasets,
     new_data_x = new_data_x[rand_perm]
     new_data_y = new_data_y[rand_perm]
     new_data_m = new_data_m[rand_perm]
-    n_batches = new_data_x.shape[0]/batch_size
+    n_batches = int(new_data_x.shape[0]/batch_size)
     n_train_batches = int(np.round(n_batches*0.9))
     #divide train set into train/val sets
     test_set_x = datasets[2]
@@ -212,16 +212,16 @@ def train_conv_net(datasets,
         start_time = time.time()
         epoch = epoch + 1
         if shuffle_batch:
-            for minibatch_index in np.random.permutation(range(n_train_batches)):
+            for minibatch_index in np.random.permutation(range(int(n_train_batches))):
                 cost_epoch = train_model(minibatch_index)
                 set_zero(zero_vec)
         else:
-            for minibatch_index in range(n_train_batches):
+            for minibatch_index in range(int(n_train_batches)):
                 cost_epoch = train_model(minibatch_index)
                 set_zero(zero_vec)
-        train_losses = [test_model(i) for i in range(n_train_batches)]
+        train_losses = [test_model(i) for i in range(int(n_train_batches))]
         train_perf = 1 - np.mean([loss[0] for loss in train_losses])
-        val_losses = [val_model(i) for i in range(n_val_batches)]
+        val_losses = [val_model(i) for i in range(int(n_val_batches))]
         val_perf = 1- np.mean(val_losses)
         epoch_perf = 'epoch: %i, training time: %.2f secs, train perf: %.2f %%, val perf: %.2f %%' % (epoch, time.time()-start_time, train_perf * 100., val_perf*100.)
         print(epoch_perf)
@@ -231,7 +231,7 @@ def train_conv_net(datasets,
             best_val_perf = val_perf
             test_loss_list = [test_model_all(test_set_x[idx*batch_size:(idx+1)*batch_size], test_set_y[idx*batch_size:(idx+1)*batch_size],
             test_set_m[idx*batch_size:(idx+1)*batch_size]##mairesse_change
-            ) for idx in range(test_batches)]
+            ) for idx in range(int(test_batches))]
             if test_set_x.shape[0]>test_batches*batch_size:
                 test_loss_list.append(test_model_all(test_set_x[test_batches*batch_size:], test_set_y[test_batches*batch_size:],
                 test_set_m[test_batches*batch_size:]##mairesse_change
