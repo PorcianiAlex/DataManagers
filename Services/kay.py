@@ -13,7 +13,7 @@ class KAY:
                     or the web app. As parameters the function receive an url(s) and
                     the service from which the request has been generated {chatbot, webapp}
 
-        '''
+
 
         def handle(self, request, source="chatbot"):
 
@@ -21,3 +21,4 @@ class KAY:
 
             for url in urls:
                 #TODO handle url
+        '''

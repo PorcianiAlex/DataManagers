@@ -126,11 +126,12 @@ class AdCounter(object):
 
 
 """-------------------Testing frame-------------------"""
-#if __name__ == '__main__':
-#    remover = AdCounter("adList/easylist.txt")
-#    start = time.time()
-#    print(remover.iframe_detector("http://www.nyt.com"))
+if __name__ == '__main__':
+    remover = AdCounter("adList/easylist.txt")
+    start = time.time()
+#    print(remover.iframe_detector("https://www.nytimes.com/interactive/2018/05/31/theater/best-25-plays.html"))
+#    print(remover.iframe_detector("http://nationalreport.net/trump-to-nominate-chris-christie-to-supreme-food-court/"))
 #    print("th time: {}".format(time.time() - start))
 #    start = time.time()
-#    print(remover.count_ads_loop("http://www.nyt.com"))
+#    print(remover.count_ads_loop("http://nationalreport.net/trump-to-nominate-chris-christie-to-supreme-food-court/"))
 #    print("loop time: {}".format(time.time() - start))

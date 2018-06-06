@@ -9,6 +9,7 @@ def main():
     myStream = tweepy.Stream(auth=myStreamListener.api.auth, listener=myStreamListener)
     userStream = mp.Process(target=myStream.userstream)
     userStream.start()
+    print(userStream.pid, userStream.name)
     print('chatbot on')
     wa.app.run(debug=True, use_reloader=False)
     print('web app on')
