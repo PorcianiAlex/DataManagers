@@ -21,10 +21,10 @@ def request():
       #score = evaluator.evaluate(result["url"])
       score = {"tweet_url": 0, # string
                 "article_url": 0, # string
-                "page_quality": "lightbox-yellow", #string
+                "page_quality": "lightbox-red", #string
                 "text_evaluation": "lightbox-red", # string
-                "source_reliability": "lightbox-green", #string
-                "final_score": 43   #integer in range [0:100]
+                "source_reliability": "lightbox-yellow", #string
+                "final_score": 83   #integer in range [0:100]
                }
     html = get_embed_code(result["url"])
     return render_template('evaluation_second.html', html=html, confidence=score["final_score"], page_q=score["page_quality"], text_ev=score["text_evaluation"], source=score["source_reliability"])
