@@ -1,12 +1,23 @@
 from flask import Flask, render_template, request as req
-#from WebApp.twitter_api import get_trends, get_embed_code
-from twitter_api import get_trends, get_embed_code
+from WebApp.twitter_api import get_trends, get_embed_code
+#from twitter_api import get_trends, get_embed_code
 import json
 import builtins
-#from kay import Kay
+from kay import Kay
 
-app = Flask(__name__)
+#app = Flask(__name__)
 #evaluator = Kay()
+
+class subFlask(Flask):
+    def __init__(self):
+        self.evaluator = None
+        super().__init__(__name__)
+
+    def set_kay(self, api):
+        self.evaluator = Kay(__name__, api)
+
+
+app = subFlask()
 
 
 @app.route('/')
@@ -49,5 +60,6 @@ def table():
 def notifications():
     return render_template('firm-db/notifications.html')
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
+#if __name__ == '__main__':
+#    app.run(debug=True)

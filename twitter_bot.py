@@ -14,14 +14,14 @@ from kay import Kay
 
 class MyStreamListener(tweepy.StreamListener):
 
-    def __init__(self):
+    def __init__(self, api):
         # Twitter Authentication
         APP_KEY, APP_SECRET = "52uvSUMNZaUayWR43pzAwFcMy", "nGjYIbIshdOQDb1zNWRCVIzUtvZHeih8zOmiS21eoFQeqt1Tmk"
         ACC_TOKEN, ACC_TOKEN_SECRET = "989427693031739393-3bBGn4gT6k1c2T59AMDlylfvX1346S2", "RAP5YEXnVGfTEkgCsREd6ipA0QojD44ONKsTFBT1RShck"
         auth = tweepy.OAuthHandler(APP_KEY, APP_SECRET)
         auth.set_access_token(ACC_TOKEN, ACC_TOKEN_SECRET)
-        self.api = tweepy.API(auth, wait_on_rate_limit=True)
-        self.evaluator = Kay(__name__)
+        self.api = api  # tweepy.API(auth)
+        self.evaluator = Kay(__name__, self.api)
         super().__init__(self.api)
 
     @staticmethod
@@ -36,12 +36,15 @@ class MyStreamListener(tweepy.StreamListener):
         dm = status.direct_message
         # response = watson_assistant.message(workspace_id="d788424d-8fcd-4371-8caf-a0669d58ac53", input={'text': dm['text']})
         # time.sleep(randint(1, 3))
-        if dm['sender']['screen_name'] == 'ProjectVLADFK':
+        if dm['sender']['screen_name'] == 'KayDetector':
             return True
         # if len(response["intents"]) > 0 and response["intents"][0]['intent'] == 'url':
         elif dm['entities']['urls']:
-            self.api.send_direct_message(dm['sender']['id'], text='wait for answer, processing...')
+            self.api.send_direct_message(dm['sender']['id'], text="Hey, I am Kay, the Fake News Detector. "
+                                                                  "I am an AI powered algorithm able to classifly fake news."
+                                                                  " Wait for my answer.")
             urls = [dm['entities']['urls'][i]['expanded_url'] for i in range(len(dm['entities']['urls']))]
+            print(urls)
             # urls = self.findurls(dm['text'])
             # print(len(urls))
             for _, url in enumerate(urls):
