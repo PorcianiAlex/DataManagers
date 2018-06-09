@@ -166,6 +166,10 @@
             </div>
         </footer>
     </div>
+    <div id="cookieConsent">
+        <div id="closeCookieConsent">x</div>
+        This website is using cookies. <a href="#" target="_blank">More info</a>. <a class="cookieConsentOK">That's Fine</a>
+    </div>
 </body>
 <!--   Core JS Files   -->
 <script src="../static/index_second/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
@@ -194,6 +198,16 @@
             }, 1000);
         }
     }
+</script>
+<script>
+$(document).ready(function(){
+    setTimeout(function () {
+        $("#cookieConsent").fadeIn(200);
+     }, 4000);
+    $("#closeCookieConsent, .cookieConsentOK").click(function() {
+        $("#cookieConsent").fadeOut(200);
+    });
+});
 </script>
 
 </html>

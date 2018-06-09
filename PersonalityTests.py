@@ -91,7 +91,7 @@ def ConvNetTrainMain(mode, wordVec, attr):
                                       conv_non_linear="relu",
                                       hidden_units=[20, 20, 2],
                                       shuffle_batch=True,
-                                      n_epochs=1,
+                                      n_epochs=2,
                                       sqr_norm_lim=9,
                                       non_static=non_static,
                                       batch_size=50,
