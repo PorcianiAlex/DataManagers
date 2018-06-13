@@ -18,18 +18,7 @@ api = tweepy.API(auth)
 
 app = Flask(__name__)
 evaluator = Kay(__name__, api)
-'''
-class subFlask(Flask):
-    def __init__(self):
-        self.evaluator = None
-        super().__init__(__name__)
 
-    def set_kay(self, api):
-        self.evaluator = Kay(__name__, api)
-
-
-app = subFlask()
-'''
 
 @app.route('/')
 def main():
@@ -41,28 +30,28 @@ def request():
     if req.method == 'GET':
       result = req.args
    #   render_template()
-      res = evaluator.evaluate([result["url"]])
+      res = json.loads(evaluator.evaluate([result["url"]]))
       score = dict()
-      score['article_url'] = res['article_url']
-      if res['text_evaluation'] < 0.33:
+      score['article_url'] = res[0]['article_url']
+      if res[0]['text_evaluation'] < 0.33:
           score['text_evaluation'] = 'lightbox-green'
-      elif res['text_evaluation'] < 0.66:
+      elif res[0]['text_evaluation'] < 0.66:
           score['text_evaluation'] = 'lightbox-yellow'
       else:
           score['text_evaluation'] = 'lightbox-red'
-      if res['source_reliability'] < 0.33:
+      if res[0]['source_reliability'] < 0.33:
           score['source_reliability'] = 'lightbox-green'
-      elif res['source_reliability'] < 0.66:
+      elif res[0]['source_reliability'] < 0.66:
           score['source_reliability'] = 'lightbox-yellow'
       else:
           score['source_reliability'] = 'lightbox-red'
-      if res['page_quality'] == False or res['page_quality'] >= 1.5:
+      if res[0]['page_quality'] >= 1.5:
           score['page_quality'] = 'lightbox-red'
-      elif res['page_quality'] < 1.5 and res['page_quality']>-1:
+      elif res[0]['page_quality'] < 1.5 and res[0]['page_quality']>-1:
           score['page_quality'] = 'lightbox-yellow'
       else:
           score['page_quality'] = 'lightbox-green'
-      score['final_score'] = int(res['final_score']*100)
+      score['final_score'] = int(res[0]['final_score']*100)
 
       '''
       score = {"tweet_url": 0, # string

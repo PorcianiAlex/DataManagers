@@ -21,8 +21,7 @@ personality_clf = joblib.load('estimator_pers_full_4_feat.pkl')
 indicoio.config.api_key = '42fd1c521599079dab79ef889bc9c676'
 clf = joblib.load('estimator_val.pkl')
 banner_counter = AdCounter("easylist.txt")
-'''
-#evaluator = Kay(__name__, api)
+
 users = set()
 for row in test_csv.iterrows():
     users.add(row[1][1])
@@ -64,15 +63,15 @@ for el in users:
     url = np.mean(urls)
     bl_info = listing.get_fake_site_info(website[0])
     if bl_info == 0:
-        page_quality = False
+        person = 1
     else:
-        page_quality = url
+        person = personality_clf.predict_proba([[op, ag, ex, co]])[0][0]
     pers_dict[el] = {'pers': personality_clf.predict_proba([[op, ag, ex, co]])[0][0],
-                     'banner': page_quality}
+                     'banner': url}
 
 with open('pers_dict.pkl', 'wb') as f:
     pk.dump(pers_dict, f)
-'''
+
 
 with open('pers_dict.pkl', 'rb') as f:
     pers_dict = pk.load(f)

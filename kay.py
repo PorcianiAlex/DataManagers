@@ -45,7 +45,7 @@ class Kay(object):
         tweets_username = []
         for _, data in enumerate(data_list):
             if isinstance(data, str):
-                articles.append(data)
+                tweets.append(self.api.get_status(data.split("/")[-1], tweet_mode='extended'))
             else:
                 tweets.append(data)
         for element in tweets:
@@ -85,9 +85,9 @@ class Kay(object):
             ag = np.mean([pers_values[i]['agreeableness'] for i in range(len(pers_values))])
             ex = np.mean([pers_values[i]['extraversion'] for i in range(len(pers_values))])
             co = np.mean([pers_values[i]['conscientiousness'] for i in range(len(pers_values))])
-
+            print([op, ag, ex, co])
             user_eval.append(self.personality_clf.predict_proba([[ag, co, ex, op]])[0][0])
-        print('personality: {]'.format(time.time() - start))
+        print('personality: {}'.format(time.time() - start))
 
 
         for element in articles:
@@ -97,16 +97,16 @@ class Kay(object):
             print("unshortening: {}".format(time.time()-start))
             start = time.time()
             count = self.banner_counter.iframe_detector(url) + self.banner_counter.count_ads_th(url)
+            page_quality.append((count - 15.12200866779725) / 11.892945461889907)
             print("banner counter: {}".format(time.time() - start))
             start = time.time()
             bl_info = listing.get_fake_site_info(url)
             if bl_info == 0:
-                page_quality.append(False)
-            else:
-                page_quality.append((count-15.12200866779725)/11.892945461889907)
+                user_eval[0] = 1
             print("blacklisting: {}".format(time.time() - start))
             start = time.time()
             txt = scrape(url)
+            print(txt)
             print("scraping: {}".format(time.time() - start))
             start = time.time()
             features = ml.extract_features(txt)
@@ -117,7 +117,7 @@ class Kay(object):
             res = self.clf.predict_proba(features)
             print("prediction: {}".format(time.time() - start))
             article_eval.append(res[0][0])
-            final.append(self.log_reg.predcit_proba([user_eval[0], article_eval[0], page_quality[0]]))
+            final.append(self.log_reg.predict_proba([[user_eval[0], article_eval[0], page_quality[0]]])[0][0])
             print("total time: {}".format(time.time() - gstart))
 
             print('article eval vs final score: {} vs {}'.format(article_eval[0], final[0]))
