@@ -10,8 +10,8 @@ import sys
 import time
 import getpass
 import csv
-import PersonalityInsight
-from PersonalityInsight.conv_net_classes import LeNetConvPoolLayer, MLPDropout
+#import PersonalityInsight
+from conv_net_classes import LeNetConvPoolLayer, MLPDropout
 warnings.filterwarnings("ignore")
 
 theano.config.floatX = "float32"
@@ -398,6 +398,7 @@ def make_idx_data_cv(revs, word_idx_map, mairesse, charged_words, cv, per_attr=0
             trainY.append(rev['y'+str(per_attr)])
             mTrain.append(mairesse[rev["user"]])
     trainX = np.array(trainX,dtype=theano.config.floatX) #changed from int32 to int64
+    print(trainX)
     testX = np.array(testX,dtype=theano.config.floatX) #changed from int32 to int64
     trainY = np.array(trainY,dtype=theano.config.floatX) #changed from int32 to int64
     testY = np.array(testY,dtype=theano.config.floatX) #changed from int32 to int64
@@ -414,13 +415,14 @@ if __name__=="__main__":
     mode= sys.argv[1]
     word_vectors = sys.argv[2]
     attr = int(sys.argv[3])
+    U=None
     if mode=="-nonstatic":
         print("model architecture: CNN-non-static")
         non_static=True
     elif mode=="-static":
         print("model architecture: CNN-static")
         non_static=False
-        PersonalityInsight.conv_net_classes.run  #execfile("conv_net_classes.py")
+        exec(open("conv_net_classes.py").read())#PersonalityInsight.conv_net_classes.run  #execfile("conv_net_classes.py")
     if word_vectors=="-rand":
         print("using: random vectors")
         U = W2
@@ -428,13 +430,13 @@ if __name__=="__main__":
         print("using: word2vec vectors")
         U = W
 
-    r = range(0,10)
+    r = range(0, 10)
 
     ofile = open('perf_output_'+str(attr)+'.txt','w')
 
     charged_words=[]
 
-    emof=open("Emotion_Lexicon.csv","rb")
+    emof=open("Emotion_Lexicon.csv","r")
     csvf=csv.reader(emof, delimiter=',',quotechar='"')
     first_line=True
 
@@ -451,8 +453,7 @@ if __name__=="__main__":
 
     results = []
     for i in r:
-        datasets = make_idx_data_cv(revs, word_idx_map, mairesse, charged_words, i, attr, max_l=149, max_s=312, k=300, filter_h=3)
-
+        datasets = make_idx_data_cv(revs, word_idx_map, mairesse, charged_words, 0, attr, max_l=149, max_s=312, k=300, filter_h=3)
         perf, fscore = train_conv_net(datasets,
                               U,
                               ofile,
@@ -465,7 +466,7 @@ if __name__=="__main__":
                               shuffle_batch=True,
                               n_epochs=50,
                               sqr_norm_lim=9,
-                              non_static=non_static,
+                              non_static=True,
                               batch_size=50,
                               dropout_rate=[0.5, 0.5, 0.5],
                               activations=[Sigmoid])

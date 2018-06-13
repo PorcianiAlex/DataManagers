@@ -5,6 +5,7 @@ import re
 from watson_developer_cloud import AssistantV1
 from random import randint
 from kay import Kay
+import threading
 
 # Watson assitant Authentication
 
@@ -42,7 +43,8 @@ class MyStreamListener(tweepy.StreamListener):
         elif dm['entities']['urls']:
             self.api.send_direct_message(dm['sender']['id'], text="Hey, I am Kay, the Fake News Detector. "
                                                                   "I am an AI powered algorithm able to classifly fake news."
-                                                                  " Wait for my answer.")
+                                                                  "I'm thinking about it. (I'll take my time...)")
+
             urls = [dm['entities']['urls'][i]['expanded_url'] for i in range(len(dm['entities']['urls']))]
             print(urls)
             # urls = self.findurls(dm['text'])
@@ -50,12 +52,36 @@ class MyStreamListener(tweepy.StreamListener):
             for _, url in enumerate(urls):
                 if "twitter" in url:
                     urls[_] = self.api.get_status(url.split("/")[-1], tweet_mode='extended')
-            score = json.loads(self.evaluator.evaluate(urls))
-            self.api.send_direct_message(dm['sender']['id'], text='The article URL is: {}.\n{}\n'
-                                                                  'The account that shared the enws is: {}.\n'
+            res = json.loads(self.evaluator.evaluate(urls))
+            score = dict()
+            score['article_url'] = res[0]['article_url']
+            if res[0]['text_evaluation'] < 0.33:
+                score['text_evaluation'] = u'\U0001F60A' #happy
+            elif res[0]['text_evaluation'] < 0.66:
+                score['text_evaluation'] = u'\U0001F610' #neutra
+            else:
+                score['text_evaluation'] = u'\U0001F621' #incazzata
+            if res[0]['source_reliability'] < 0.33:
+                score['source_reliability'] = u'\U0001F60A'
+            elif res[0]['source_reliability'] < 0.66:
+                score['source_reliability'] = u'\U0001F610'
+            else:
+                score['source_reliability'] = u'\U0001F621'
+            if not res[0]['page_quality'] or res[0]['page_quality'] >= 1.5:
+                score['page_quality'] = u'\U0001F621'
+            elif res[0]['page_quality'] < 1.5 and res[0]['page_quality'] > -1:
+                score['page_quality'] = u'\U0001F610'
+            else:
+                score['page_quality'] = u'\U0001F60A'
+            score['final_score'] = int(res[0]['final_score'] * 100)
+            self.api.send_direct_message(dm['sender']['id'], text='The article URL is: {}.\n'
+                                                                  'The account that shared the news is: {}.\n'
+                                                                  'The article\'s page quality is: {}.\n'
+                                                                  'The article\'s text style is {}.\n'
                                                                   'The confidence that the news is fake is {}%.'
-                                         .format(score[0]['unshortened_url'], score[0]['blacklist'],
-                                                 score[0]['user_evaluation'], score[0]['evaluation']*100))
+                                         .format(score['article_url'], score['source_reliability'],
+                                                 score['page_quality'], score['text_evaluation'],
+                                                 str(score['final_score'])))
         #else:
          #   self.api.send_direct_message(dm['sender']['id'], text=response['output']['text'][0])
         return True

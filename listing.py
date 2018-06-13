@@ -12,10 +12,14 @@ def get_fake_site_info(url):
     clean_url = '.'.join(ext[1:])
     with open('blacklist.json') as jsonfile:
         fake_news_urls = json.load(jsonfile)
-        try:
-            return 'site characteristics: ' + ', '.join([value for value in fake_news_urls[clean_url].values() if value != ''])
-        except:
-            return 'site characteristics: this site is not known for spreading fake news.'
+        if clean_url in fake_news_urls:
+            return 0
+        else:
+            return 1
+#        try:
+#            return 'site characteristics: ' + ', '.join([value for value in fake_news_urls[clean_url].values() if value != ''])
+#        except:
+#            return 'site characteristics: this site is not known for spreading fake news.'
 
                 # stub of dict in case it is needed
                 #{'type': 'this site is not known for spreading fake news.',
