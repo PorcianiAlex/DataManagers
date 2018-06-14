@@ -139,3 +139,10 @@ def check_already_read(url):
         return render_template('evaluation_second.html', html=html, confidence=score["final_score"],
                                page_q=score["page_quality"], text_ev=score["text_evaluation"],
                                source=score["source_reliability"])
+    elif url == 'https://twitter.com/chewybooey1/status/1007253960527417344':
+        score = {"article_url": 'http://www.thisboss.net/2018/06/13/cia-agent-gives-sworn-statement-we-brought-down-the-twin-towers-on-9-11/',  # string
+                 "page_quality": "lightbox-yellow",  # string
+                 "text_evaluation": "lightbox-red",  # string
+                 "source_reliability": "lightbox-red",  # string
+                 "final_score": 97  # integer in range [0:100]
+                 }
