@@ -34,7 +34,7 @@ class Kay(object):
         self.api = api
         self.personality_clf = joblib.load('estimator_pers_full_4_feat.pkl')
         indicoio.config.api_key = '42fd1c521599079dab79ef889bc9c676'
-        self.log_reg = joblib.load('log_reg.pkl')
+        self.log_reg = joblib.load('svc_final_comp.pkl')
         print(name)
 
     def evaluate(self, data_list):
@@ -52,7 +52,6 @@ class Kay(object):
             articles_urls = []
             for _ in range(len(element._json['entities']['urls'])):
                 articles_urls.append(element._json['entities']['urls'][_]['expanded_url'])
-                print(articles_urls)
             tweets_text.append(element._json['full_text'])
             tweets_username.append(element._json['user']['id'])
             articles.extend(articles_urls)

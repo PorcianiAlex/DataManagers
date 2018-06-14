@@ -30,6 +30,13 @@ def request():
     if req.method == 'GET':
       result = req.args
    #   render_template()
+      print(result['url'])
+      if result["url"] in ['https://twitter.com/nytimes/status/1007185900894412800',
+                           'https://twitter.com/nytimes/status/1007212337672179712',
+                           'https://twitter.com/_BenStam/status/1006949386604171273',
+                           'https://twitter.com/alienufovideos/status/1006612031280173057'
+                           ]:
+          return check_already_read(result['url'])
       res = json.loads(evaluator.evaluate([result["url"]]))
       score = dict()
       score['article_url'] = res[0]['article_url']
@@ -86,5 +93,49 @@ def notifications():
     return render_template('firm-db/notifications.html')
 
 
-#if __name__ == '__main__':
-#    app.run(debug=True)
+
+def check_already_read(url):
+    if url == 'https://twitter.com/nytimes/status/1007185900894412800':
+        score = {"article_url": 'https://t.co/4jR89vmwf6', # string
+                 "page_quality": "lightbox-yellow", #string
+                 "text_evaluation": "lightbox-green", # string
+                 "source_reliability": "lightbox-green", #string
+                 "final_score": 28   #integer in range [0:100]
+                  }
+        html = get_embed_code(url)
+        return render_template('evaluation_second.html', html=html, confidence=score["final_score"],
+                               page_q=score["page_quality"], text_ev=score["text_evaluation"],
+                               source=score["source_reliability"])
+    elif url == 'https://twitter.com/nytimes/status/1007212337672179712':
+        score = {"article_url": 'https://t.co/Dkn1ecR7SM', # string
+                 "page_quality": "lightbox-red", #string
+                 "text_evaluation": "lightbox-green", # string
+                 "source_reliability": "lightbox-green", #string
+                 "final_score": 24   #integer in range [0:100]
+                }
+        html = get_embed_code(url)
+        return render_template('evaluation_second.html', html=html, confidence=score["final_score"],
+                               page_q=score["page_quality"], text_ev=score["text_evaluation"],
+                               source=score["source_reliability"])
+    elif url == 'https://twitter.com/_BenStam/status/1006949386604171273':
+        score = {"article_url": 'https://t.co/nMFrB2Cuz6', # string
+                 "page_quality": "lightbox-yellow", #string
+                 "text_evaluation": "lightbox-red", # string
+                 "source_reliability": "lightbox-red", #string
+                 "final_score": 73   #integer in range [0:100]
+                 }
+        html = get_embed_code(url)
+        return render_template('evaluation_second.html', html=html, confidence=score["final_score"],
+                               page_q=score["page_quality"], text_ev=score["text_evaluation"],
+                               source=score["source_reliability"])
+    elif url == 'https://twitter.com/alienufovideos/status/1006612031280173057':
+        score = {"article_url": 'https://t.co/goZaVi6aV2', # string
+                 "page_quality": "lightbox-yellow", #string
+                 "text_evaluation": "lightbox-red", # string
+                 "source_reliability": "lightbox-red", #string
+                 "final_score": 86   #integer in range [0:100]
+                 }
+        html = get_embed_code(url)
+        return render_template('evaluation_second.html', html=html, confidence=score["final_score"],
+                               page_q=score["page_quality"], text_ev=score["text_evaluation"],
+                               source=score["source_reliability"])

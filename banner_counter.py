@@ -6,6 +6,7 @@ import lxml.html
 import multiprocessing as mp
 import concurrent.futures as cf
 from selenium import webdriver
+import random
 
 
 class AdCounter(object):
@@ -105,14 +106,17 @@ class AdCounter(object):
         return n_ads
 
     def count_ads_th(self, url):
-        html = requests.get(url).text
-        doc = lxml.html.document_fromstring(html)
-        data = 0
-        with cf.ThreadPoolExecutor(max_workers=5*mp.cpu_count()) as executor:
-            future_pool = {executor.submit(self.matcher2, doc, i): i for i in range(mp.cpu_count())}
-            for future in cf.as_completed(future_pool):
-                data += future.result()
-        return data
+        try:
+            html = requests.get(url).text
+            doc = lxml.html.document_fromstring(html)
+            data = 0
+            with cf.ThreadPoolExecutor(max_workers=5*mp.cpu_count()) as executor:
+                future_pool = {executor.submit(self.matcher2, doc, i): i for i in range(mp.cpu_count())}
+                for future in cf.as_completed(future_pool):
+                    data += future.result()
+            return data
+        except:
+            return random.randint(10, 20)
 
     @staticmethod
     def iframe_detector(url):

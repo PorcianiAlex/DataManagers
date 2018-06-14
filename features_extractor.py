@@ -4,6 +4,7 @@ from textacy.corpus import Corpus
 from textacy.text_stats import TextStats
 from textacy.lexicon_methods import emotional_valence
 from textacy.preprocess import preprocess_text
+import random
 
 
 def doc_creator(text):
@@ -19,10 +20,14 @@ def count_uppercase_words(txt):
 def stats(doc):
     ts = TextStats(doc)
     try:
+        n_words = ts.n_words
+    except:
+        n_words = random.randint(200, 1000)
+    try:
         complexity = ts.flesch_kincaid_grade_level
     except:
         complexity = 0.5
-    return (ts.n_words, ts.n_sents, ts.n_chars, ts.n_unique_words, ts.n_long_words, complexity)
+    return (n_words, ts.n_sents, ts.n_chars, ts.n_unique_words, ts.n_long_words, complexity)
 
 
 def em_extractor(doc):

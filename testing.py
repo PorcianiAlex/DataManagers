@@ -9,7 +9,7 @@ from sklearn.externals import joblib
 import listing
 
 
-test_csv = pd.read_csv('test.csv', sep='\t')
+test_csv = pd.read_csv('test2.csv', sep='\t')
 
 APP_KEY, APP_SECRET = "52uvSUMNZaUayWR43pzAwFcMy", "nGjYIbIshdOQDb1zNWRCVIzUtvZHeih8zOmiS21eoFQeqt1Tmk"
 ACC_TOKEN, ACC_TOKEN_SECRET = "989427693031739393-3bBGn4gT6k1c2T59AMDlylfvX1346S2", "RAP5YEXnVGfTEkgCsREd6ipA0QojD44ONKsTFBT1RShck"
@@ -66,14 +66,14 @@ for el in users:
         person = 1
     else:
         person = personality_clf.predict_proba([[op, ag, ex, co]])[0][0]
-    pers_dict[el] = {'pers': personality_clf.predict_proba([[op, ag, ex, co]])[0][0],
+    pers_dict[el] = {'pers': person,
                      'banner': url}
 
-with open('pers_dict.pkl', 'wb') as f:
+with open('pers_dict2.pkl', 'wb') as f:
     pk.dump(pers_dict, f)
 
 
-with open('pers_dict.pkl', 'rb') as f:
+with open('pers_dict2.pkl', 'rb') as f:
     pers_dict = pk.load(f)
 
 print(pers_dict)
@@ -96,5 +96,5 @@ for row in test_csv.iterrows():
         print(e)
 
 df = pd.DataFrame(new_feat, columns=['personality', 'text', 'pq', 'label'])
-df.to_csv('regr.csv', sep=',')
+df.to_csv('regr2.csv', sep=',')
 print('done')
