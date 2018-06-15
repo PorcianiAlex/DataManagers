@@ -57,7 +57,16 @@ class MyStreamListener(tweepy.StreamListener):
                            'https://twitter.com/_BenStam/status/1006949386604171273',
                            'https://twitter.com/alienufovideos/status/1006612031280173057'
                            ]:
-                    return check_already_read(url)
+                    score = check_already_read(url)
+                    self.api.send_direct_message(dm['sender']['id'], text='The article URL is: {}.\n'
+                                                                     'The account that shared the news is: {}.\n'
+                                                                     'The article\'s page quality is: {}.\n'
+                                                                     'The article\'s text style is {}.\n'
+                                                                     'The confidence that the news is fake is {}%.'
+                                            .format(score['article_url'], score['source_reliability'],
+                                                    score['page_quality'], score['text_evaluation'],
+                                                    str(score['final_score'])))
+                    return True
             res = json.loads(self.evaluator.evaluate(urls))
             score = dict()
             score['article_url'] = res[0]['article_url']
@@ -134,12 +143,5 @@ def check_already_read(url):
                  "final_score": 97  # integer in range [0:100]
                  }
 
-    self.api.send_direct_message(dm['sender']['id'], text='The article URL is: {}.\n'
-                                                          'The account that shared the news is: {}.\n'
-                                                          'The article\'s page quality is: {}.\n'
-                                                          'The article\'s text style is {}.\n'
-                                                          'The confidence that the news is fake is {}%.'
-                                 .format(score['article_url'], score['source_reliability'],
-                                         score['page_quality'], score['text_evaluation'],
-                                         str(score['final_score'])))
-    return True
+
+    return score

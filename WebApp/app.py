@@ -4,6 +4,7 @@ from WebApp.twitter_api import get_trends, get_embed_code
 import json
 import tweepy
 from kay import Kay
+import time
 
 Consumer_Key ='HGHfSdL36UbXtRzreZWh0oQ3T'
 Consumer_Secret ='RE5GvxSMzsRpggUKZaFYvccXb8XnnIc5muxnkvXGCwpi75WMUn'
@@ -29,7 +30,7 @@ def main():
 def request():
     if req.method == 'GET':
       result = req.args
-   #   render_template()
+      time.sleep(10)
       print(result['url'])
       if result["url"] in ['https://twitter.com/nytimes/status/1007185900894412800',
                            'https://twitter.com/nytimes/status/1007212337672179712',
