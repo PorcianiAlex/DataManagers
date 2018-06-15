@@ -34,7 +34,7 @@ class Kay(object):
         self.api = api
         self.personality_clf = joblib.load('estimator_pers_full_4_feat.pkl')
         indicoio.config.api_key = '42fd1c521599079dab79ef889bc9c676'
-        self.log_reg = joblib.load('svc_final_comp.pkl')
+        self.log_reg = joblib.load('svc_final_comp2.pkl')
         print(name)
 
     def evaluate(self, data_list):

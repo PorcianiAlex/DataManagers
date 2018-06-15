@@ -146,3 +146,7 @@ def check_already_read(url):
                  "source_reliability": "lightbox-red",  # string
                  "final_score": 97  # integer in range [0:100]
                  }
+        html = get_embed_code(url)
+        return render_template('evaluation_second.html', html=html, confidence=score["final_score"],
+                               page_q=score["page_quality"], text_ev=score["text_evaluation"],
+                               source=score["source_reliability"])

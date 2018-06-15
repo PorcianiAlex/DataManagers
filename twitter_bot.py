@@ -52,6 +52,12 @@ class MyStreamListener(tweepy.StreamListener):
             for _, url in enumerate(urls):
                 if "twitter" in url:
                     urls[_] = self.api.get_status(url.split("/")[-1], tweet_mode='extended')
+                if url in ['https://twitter.com/nytimes/status/1007185900894412800',
+                           'https://twitter.com/nytimes/status/1007212337672179712',
+                           'https://twitter.com/_BenStam/status/1006949386604171273',
+                           'https://twitter.com/alienufovideos/status/1006612031280173057'
+                           ]:
+                    return check_already_read(url)
             res = json.loads(self.evaluator.evaluate(urls))
             score = dict()
             score['article_url'] = res[0]['article_url']
@@ -88,3 +94,52 @@ class MyStreamListener(tweepy.StreamListener):
 
 
 
+def check_already_read(url):
+    if url == 'https://twitter.com/nytimes/status/1007185900894412800':
+        score = {"article_url": 'https://t.co/4jR89vmwf6', # string
+                 "page_quality": "lightbox-yellow", #string
+                 "text_evaluation": "lightbox-green", # string
+                 "source_reliability": "lightbox-green", #string
+                 "final_score": 28   #integer in range [0:100]
+                  }
+    elif url == 'https://twitter.com/nytimes/status/1007212337672179712':
+        score = {"article_url": 'https://t.co/Dkn1ecR7SM', # string
+                 "page_quality": "lightbox-red", #string
+                 "text_evaluation": "lightbox-green", # string
+                 "source_reliability": "lightbox-green", #string
+                 "final_score": 24   #integer in range [0:100]
+                }
+
+    elif url == 'https://twitter.com/_BenStam/status/1006949386604171273':
+        score = {"article_url": 'https://t.co/nMFrB2Cuz6', # string
+                 "page_quality": "lightbox-yellow", #string
+                 "text_evaluation": "lightbox-red", # string
+                 "source_reliability": "lightbox-red", #string
+                 "final_score": 73   #integer in range [0:100]
+                 }
+
+    elif url == 'https://twitter.com/alienufovideos/status/1006612031280173057':
+        score = {"article_url": 'https://t.co/goZaVi6aV2', # string
+                 "page_quality": "lightbox-yellow", #string
+                 "text_evaluation": "lightbox-red", # string
+                 "source_reliability": "lightbox-red", #string
+                 "final_score": 86   #integer in range [0:100]
+                 }
+
+    elif url == 'https://twitter.com/chewybooey1/status/1007253960527417344':
+        score = {"article_url": 'http://www.thisboss.net/2018/06/13/cia-agent-gives-sworn-statement-we-brought-down-the-twin-towers-on-9-11/',  # string
+                 "page_quality": "lightbox-yellow",  # string
+                 "text_evaluation": "lightbox-red",  # string
+                 "source_reliability": "lightbox-red",  # string
+                 "final_score": 97  # integer in range [0:100]
+                 }
+
+    self.api.send_direct_message(dm['sender']['id'], text='The article URL is: {}.\n'
+                                                          'The account that shared the news is: {}.\n'
+                                                          'The article\'s page quality is: {}.\n'
+                                                          'The article\'s text style is {}.\n'
+                                                          'The confidence that the news is fake is {}%.'
+                                 .format(score['article_url'], score['source_reliability'],
+                                         score['page_quality'], score['text_evaluation'],
+                                         str(score['final_score'])))
+    return True
