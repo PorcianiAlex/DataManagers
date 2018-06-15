@@ -7636,7 +7636,7 @@ div.lightbox-red {
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    z-index: 99999; /* Sit on top */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
@@ -7650,7 +7650,18 @@ div.lightbox-red {
 .modal-content {
     background-color: #fefefe;
     margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
+    padding: 30px;
     border: 1px solid #888;
     width: 80%; /* Could be more or less, depending on screen size */
+    text_align: center;
 }
+
+.modal-content img {
+    position: relative;
+    left: 50%;
+    width: 200px;
+    height: 200px;
+    margin-left: -100px;
+}
+
+
